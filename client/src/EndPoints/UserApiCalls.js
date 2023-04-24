@@ -117,6 +117,46 @@ const setNewPassword = async (token, id, values) => {
     }
   };
 
+  const userAddress = async (id)=> {
+    try {
+      const response = await axios.get(`/user/getAddress/${id}`);
+     
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const userAddAddress = async ( data, id) => {
+    console.log("apiCalls",id, data);
+    try {
+      const response = await axios.post(`/user/addAddress/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const parloursList = async()=>{
+    
+    try {
+      const response = await axios.get("/user/parloursList");
+      
+      return response.data
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const parlourSingleViewPage = async(parlourId)=>{
+    try {
+      const response = await axios.get(`/user/parlourSingleViewPage/${parlourId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
 
 
   const UserApiCalls = {
@@ -126,7 +166,11 @@ const setNewPassword = async (token, id, values) => {
     resendOTP,
     setNewPassword,
     sendResetLink,
-    getUserValid
+    getUserValid,
+    userAddress,
+    userAddAddress,
+    parloursList,
+    parlourSingleViewPage
   }
 
   export default UserApiCalls;

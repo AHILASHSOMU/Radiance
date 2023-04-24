@@ -94,13 +94,50 @@ const vendorsignin = async (vendorData) => {
     }
   };
 
+  const vendorparlourdetails = async (formdata,vendorId,images)=>{
+    try {
+      const response = await axios.post("/vendor/parlourdetails",{...formdata,vendorId,images});
+      return response.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const categoryList = async (req, res) =>{
+    try {
+    
+      const response = await axios.get('/vendor/categoriesList');
+      return response.data;
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const addservices = async (formdata,vendorId)=>{
+    try {
+      console.log("came",formdata);
+      const response = await axios.post("/vendor/addservices",{...formdata,vendorId});
+      
+      return response.data
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+
+ 
+
   const VendorApiCalls = {
     vendorsignin,
     vendorsignUp,
     verifyOTP,
     sendResetLink,
     getVendorValid,
-    setNewPassword
+    setNewPassword,
+    vendorparlourdetails,
+    categoryList,
+    addservices,
+    
 
   }
 

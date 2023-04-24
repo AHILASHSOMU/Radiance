@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Paper,
@@ -14,6 +14,8 @@ import { useFormik } from "formik";
 import { signInSchema } from "../../schemas";
 import apiCalls from "../../EndPoints/UserApiCalls";
 import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserLogin } from "../../store/userSlice"
 
 function SignIn() {
   const marginTop = { marginTop: 5 };
@@ -28,10 +30,10 @@ function SignIn() {
 
   const [error, setError] = useState("");
   const navigate = useNavigate("");
+  const dispatch = useDispatch();
 
   const initialValues = {
     email: "",
-
     password: "",
   };
 
@@ -45,8 +47,13 @@ function SignIn() {
 
         const response = await apiCalls.signin(values);
         console.log(response);
-        if (response.user) {
-          localStorage.setItem("usertoken", response.user);
+        if (response.token) {
+          dispatch(
+            setUserLogin({
+              token: response.token,
+              userData: response.userData
+            })
+          );
           navigate("/");
         } else {
           setError(response.error);
@@ -56,6 +63,9 @@ function SignIn() {
     });
 
   console.log(errors);
+
+
+
 
   return (
     <Grid>

@@ -9,6 +9,10 @@ router.route("/signin").post(vendorHelpers.postSignIn)
 router.route("/resetLink").post(vendorHelpers.sendPassResetLink);
 router.route("/forgotPassword/:id/:token").get(vendorHelpers.verifyVendor);
 router.route("/changePassword/:id/:token").post(vendorHelpers.changePassword);
+router.route("/parlourdetails").post(vendorHelpers.postParlourDetails);
+router.route("/categoriesList").get(vendorHelpers.categoryList);
+router.route("/addservices").post(vendorHelpers.addServices);
+
 
 
 

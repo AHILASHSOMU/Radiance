@@ -18,7 +18,7 @@ import {
 import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
 
 import apiCalls from "../../EndPoints/UserApiCalls";
-import LoadingAnimation from "./LoadingAnimation"
+import LoadingAnimation from "../../layouts/LoadingAnimation"
 import { useFormik } from "formik";
 import { signUpSchema } from "../../schemas";
 import { useNavigate } from "react-router-dom";

@@ -4,6 +4,7 @@ import apiCalls from "../../EndPoints/AdminApiCalls";
 function UsersTable() {
   const [allUsers, setAllUsers] = useState([]);
   const [updatedUsers, setUpdatedUser] = useState("");
+  const [blockSuccess, setBlockSuccess] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -11,12 +12,15 @@ function UsersTable() {
       setAllUsers(response.users);
     }
     fetchData();
-  }, [allUsers]);
+  }, [blockSuccess]);
+
+
   const handleClickUserStatus = async (id) => {
     const userId = {
       id: id,
     };
     const result = await apiCalls.userStatusControl(userId);
+    setBlockSuccess(!blockSuccess)
     setUpdatedUser(result.updatedUser);
   };
 

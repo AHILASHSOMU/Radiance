@@ -1,0 +1,7 @@
+::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
+
+.link {
+    text-decoration: none;
+  }

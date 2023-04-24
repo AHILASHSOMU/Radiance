@@ -14,6 +14,8 @@ import { useFormik } from "formik";
 import { signInSchema } from "../../schemas";
 import apiCalls from "../../EndPoints/AdminApiCalls";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { setAdminLogin } from "../../store/adminSlice";
 
 function SignIn() {
     const marginTop = { marginTop: 5 };
@@ -26,6 +28,7 @@ function SignIn() {
     const headerStyle = { margin: 0 };
     const avatarStyle = { backgroundColor: "#1bbd7e" };
   
+    const dispatch = useDispatch();
     const [error, setError] = useState("");
     const navigate = useNavigate("");
   
@@ -42,12 +45,17 @@ function SignIn() {
   
         onSubmit: async (values, action) => {
           console.log(values);
-  
+          
           const response = await apiCalls.adminsignin(values);
           console.log(response);
-          if(response.admin){
-            console.log("came")
-             localStorage.setItem("admintoken",response.admin);
+          if(response.token){
+           
+            dispatch(
+              setAdminLogin({
+                token: response.token,
+                adminData: response.adminData
+              })
+            );
             navigate("/admin/adminHome");
           } else {
             

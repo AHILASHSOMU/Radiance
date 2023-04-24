@@ -10,6 +10,7 @@ import image1 from "../../public/images/image1.jpg"
 import image2 from "../../public/images/image2.jpg"
 import image3 from "../../public/images/image4.jpg"
 import styles from "../../styles/UserStyles/OurServices.css"
+import { Link } from 'react-router-dom';
 
 
 const useStyles = makeStyles({
@@ -57,6 +58,7 @@ export default function ActionAreaCard() {
         </Card>
 
         <Card className={classes.card} sx={{ margin: "0 40px", minWidth: 300, maxWidth: 400, flex: 1 }}>
+          <Link to="/parlourList" className="link">
           <CardActionArea>
             <CardMedia
               component="img"
@@ -71,6 +73,7 @@ export default function ActionAreaCard() {
               </Typography>
             </CardContent>
           </CardActionArea>
+          </Link>
         </Card>
 
         <Card className={classes.card} sx={{ margin: "0 40px", minWidth: 300, maxWidth: 400, flex: 1 }}>

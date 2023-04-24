@@ -12,7 +12,7 @@ export default function BoxSx() {
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'center',
-     
+      marginTop: 20
     }}
   >
     <ul style={{ display: 'flex', listStyleType: 'none', marginTop: '30', color: 'white', padding: 10, paddingLeft: '0px' }}>

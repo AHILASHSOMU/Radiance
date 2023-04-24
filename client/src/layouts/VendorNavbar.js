@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useEffect,useState} from "react"
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,20 +15,51 @@ import MenuItem from "@mui/material/MenuItem";
 import { Link, useNavigate } from "react-router-dom";
 import logoimg from "../public/images/parlourlogo.jpg";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useDispatch, useSelector } from "react-redux";
+import { setVendorLogout } from "../store/vendorSlice";
 
 const pages = ["Home", "Services", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const defaultSettings = ["Profile", "Account", "Dashboard", "Logout"];
 
-function Navbar() {
+function VendorNavbar() {
 
+ const vendorLogin = useSelector((state)=>state.vendor)
+ const {vendorData, token} = vendorLogin
+
+  useEffect(()=>{
+    
+
+    if(vendorData){
+      setSettings([...defaultSettings.slice(0, -1), "Logout"]);
+      setLogoutText('Logout');
+    }else{
+      setSettings([...defaultSettings.slice(0, -1), "Login"]);
+      setLogoutText('Login');
+    }
+
+  },[]);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+  const [logoutText, setLogoutText] = useState('Logout');
+  const [settings, setSettings] = useState(defaultSettings);
+  
   const handleLogout = () =>{
-    localStorage.removeItem("vendortoken")
+    dispatch(setVendorLogout());
     setAnchorElUser(null);
     navigate("/vendor/vendorHome");
+    setLogoutText('Login');
+    setSettings([...defaultSettings.slice(0, -1), "Login"]);
+  }
+
+  const handleLogin = () =>{
+    setAnchorElUser(null);
+    navigate("/vendor/vendorSignin");
+    setLogoutText('Logout');
+    setSettings([...defaultSettings.slice(0, -1), "Logout"]);
   }
 
   const handleOpenNavMenu = (event) => {
@@ -166,8 +198,8 @@ function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={setting === "Logout" ? handleLogout : handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting} onClick={setting === "Logout" ? handleLogout : (setting === "Login" ? handleLogin : handleCloseUserMenu)}>
+                  <Typography textAlign="center">{setting === "Logout" || setting==="Login" ? logoutText : setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -177,4 +209,4 @@ function Navbar() {
     </AppBar>
   );
 }
-export default Navbar;
+export default VendorNavbar;

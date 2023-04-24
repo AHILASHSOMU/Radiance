@@ -1,4 +1,5 @@
 const User = require("../Models/userModel");
+const Vendor = require("../Models/vendorModel")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const tokenSecret = process.env.SECRET;
@@ -317,12 +318,12 @@ const postSignIn = async (req, res) => {
       console.log("user logged in");
       const token = jwt.sign(
         {
-          email: userData.email,
+          _id: userData._id,
         },
         tokenSecret
       );
-
-      res.json({ status: "ok", user: token });
+      delete userData.password
+      res.json({ status: "ok", token: token, userData: userData });
     } else {
       res.json({
         status: "error",
@@ -350,6 +351,78 @@ const verifyMail = async (req, res) => {
   }
 };
 
+const getAddress = async (req, res)=>{
+  id = req.params.id;
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({message:"User not found"});
+    }
+    const address = user.address;
+    return res.status(200).json(address);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal server error");
+  }
+}
+
+const userAddAddress = async (req, res)=> {
+    id = req.params.id;
+    const {DoorNo, Street, Landmark, City, State, Pincode} = req.body
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      {_id: id},
+      {$set: {address:{
+        DoorNo,
+        Street,
+        Landmark,
+        City,
+        State,
+        Pincode
+      }}},
+      {new: true}
+    )
+
+    if(updatedUser) {
+      return res.status(200).json({success: true, message: "Address added successfully"})
+    }else{
+      return res.status(404).json({success: false, message:"User not found"});
+    }
+    
+    
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({success: false, message: "Error adding address"});
+  }
+}
+
+const parloursList = async (req, res) => {
+  try {
+    
+    const vendors = await Vendor.find({  $and: [{ is_blocked: false }, { isVendor: true }], }).populate('parlourDetails');
+     
+    res.status(200).json(vendors);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const parlourDetailsAndServices = async (req,res) => {
+  
+  try {
+    const parlourDetailsServices = await Vendor.findById(req.params.parlourId)
+    .populate({
+      path: 'services.categoryId',
+      select: 'name',
+  })
+  .exec();
+  res.status(200).json({parlourDetailsServices})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 module.exports = {
   postSignUp,
   postSignIn,
@@ -358,5 +431,9 @@ module.exports = {
   resendOTP,
   sendPassResetLink ,
   verifyUser,
-  changePassword
+  changePassword,
+  getAddress,
+  userAddAddress,
+  parloursList,
+  parlourDetailsAndServices
 };

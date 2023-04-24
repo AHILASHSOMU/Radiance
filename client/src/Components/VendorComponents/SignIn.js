@@ -14,6 +14,8 @@ import { useFormik } from "formik";
 import { signInSchema } from "../../schemas";
 import apiCalls from "../../EndPoints/VendorApiCalls";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { setVendorLogin } from "../../store/vendorSlice";
 
 function SignIn() {
   const marginTop = { marginTop: 5 };
@@ -27,6 +29,7 @@ function SignIn() {
   const avatarStyle = { backgroundColor: "#1bbd7e" };
 
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate("");
 
   const initialValues = {
@@ -45,8 +48,13 @@ function SignIn() {
 
         const response = await apiCalls.vendorsignin(values);
         console.log(response);
-        if (response.vendor) {
-          localStorage.setItem("vendortoken", response.vendor);
+        if (response.token) {
+         dispatch(
+          setVendorLogin({
+            token: response.token,
+            vendorData: response.vendorData
+          })
+         )
           navigate("/vendor/vendorHome");
         } else {
           setError(response.error);

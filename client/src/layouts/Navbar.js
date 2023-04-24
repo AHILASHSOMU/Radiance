@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useEffect,useState} from "react"
+import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,48 +14,53 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { Link, useNavigate } from "react-router-dom";
 import logoimg from "../public/images/parlourlogo.jpg";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserLogout } from "../store/userSlice";
 
 const pages = ["Home", "Services", "Blog"];
 const defaultSettings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
+  const userLogin = useSelector((state) => state.user);
+  const { userData, token } = userLogin;
 
- 
-
-  useEffect(()=>{
-    const user = localStorage.getItem("usertoken")
-
-    if(user){
+  useEffect(() => {
+    if (userData) {
       setSettings([...defaultSettings.slice(0, -1), "Logout"]);
-      setLogoutText('Logout');
-    }else{
+      setLogoutText("Logout");
+    } else {
       setSettings([...defaultSettings.slice(0, -1), "Login"]);
-      setLogoutText('Login');
+      setLogoutText("Login");
     }
+  }, []);
 
-  },[]);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const [logoutText, setLogoutText] = useState('Logout');
+  const [logoutText, setLogoutText] = useState("Logout");
   const [settings, setSettings] = useState(defaultSettings);
-  
-  const handleLogout = () =>{
-    localStorage.removeItem("usertoken")
+
+const handleProfileClick = ()=> {
+  navigate("/profile")
+}
+
+  const handleLogout = () => {
+    dispatch(setUserLogout());
     setAnchorElUser(null);
     navigate("/");
-    setLogoutText('Login');
+    setLogoutText("Login");
+    setSettings([...defaultSettings.slice(0, -1), "Login"]);
+  };
 
-  }
-
-  const handleLogin = () =>{
+  const handleLogin = () => {
     setAnchorElUser(null);
     navigate("/signin");
-    setLogoutText('Logout');
-  }
+    setLogoutText("Logout");
+    setSettings([...defaultSettings.slice(0, -1), "Logout"]);
+  };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -98,7 +103,7 @@ function Navbar() {
               marginLeft: "10px",
             }}
           >
-           Radiance
+            Radiance
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -144,7 +149,13 @@ function Navbar() {
               ))}
             </Menu>
           </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } ,marginLeft:{ xs: "none", md: "770px" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              marginLeft: { xs: "none", md: "770px" },
+            }}
+          >
             {pages.map((page) => (
               <Button
                 key={page}
@@ -165,6 +176,15 @@ function Navbar() {
               </Button>
             ))}
           </Box>
+          {userData ? (
+            <>
+              <Typography variant="subtitle1" sx={{ mr: 1 }}>
+                Hi {userData.name}
+              </Typography>
+            </>
+          ) : (
+            ""
+          )}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton
@@ -172,8 +192,7 @@ function Navbar() {
                 sx={{ p: 0, marginRight: "10px" }}
               >
                 {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
-                <AccountCircleIcon fontSize="large" color="error"/>
-              
+                <AccountCircleIcon fontSize="large" color="error" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -193,8 +212,23 @@ function Navbar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={setting === "Logout" ? handleLogout : handleCloseUserMenu || setting === "Login" ? handleLogin : handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting === "Logout" || setting==="Login" ? logoutText : setting}</Typography>
+                <MenuItem
+                  key={setting}
+                  onClick={
+                    setting === "Profile"
+                    ? handleProfileClick
+                    : setting === "Logout"
+                    ? handleLogout
+                    : setting === "Login"
+                    ? handleLogin
+                    : handleCloseUserMenu
+                  }
+                >
+                  <Typography textAlign="center">
+                    {setting === "Logout" || setting === "Login"
+                      ? logoutText
+                      : setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>

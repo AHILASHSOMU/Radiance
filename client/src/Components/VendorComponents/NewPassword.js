@@ -34,7 +34,7 @@ function NewPassword(props) {
 
     if (result.status) {
       setSubmitting(false);
-      navigate("/vendor/signin");
+      navigate("/vendor/vendorsignin");
     } else {
       toast.error(result.error);
     }

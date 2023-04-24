@@ -1,14 +1,21 @@
 import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import AdminSidebar from "../../layouts/adminSidebar"
+import { useSelector } from 'react-redux';
 
 function AdminHome() {
 
   const navigate = useNavigate();
+
+  const adminLogin = useSelector((state)=>state.admin)
+  const {adminData, token} = adminLogin
   useEffect(()=>{
-    const admin = localStorage.getItem("admintoken");
-    !admin&&navigate("/admin/adminSignin",{replace:true});
-  })
+    if(token){
+      navigate("/admin/adminHome",{replace:true});
+    }else{
+      navigate("/admin/adminSignin")
+    }
+  });
 
   return (
     <div>

@@ -13,7 +13,7 @@ const adminsignin = async (adminData) =>{
   }
 
 const userDetails = async()=>{
-  console.log("came");
+ 
   try {
     const response = await axios.get("/admin/userDetails");
     return response.data
@@ -32,7 +32,7 @@ const userStatusControl = async (userId)=>{
 }
 
 const vendorDetails = async()=>{
-  console.log("came");
+  
   try {
     const response = await axios.get("/admin/vendorDetails");
     return response.data
@@ -50,12 +50,77 @@ const vendorStatusControl = async (vendorId)=>{
   }
 }
 
+const addCategory = async (inputValue)=>{
+ 
+  try {
+
+    console.log(inputValue,"AdminapiCalls");
+    const response = await axios.post("/admin/addCategory", {inputValue})
+    return response.data
+
+  } catch (error) {
+
+    console.log(error.message);
+  }
+}
+
+const allCategory = async() => {
+  try {
+    const response = await axios.get("/admin/findCategory");
+    return response.data;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const CategoryStatusControl = async(categoryId)=>{
+  try {
+    const response = await axios.patch('/admin/categoryStatusControl',categoryId);
+    return response.data;
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const VendorsRequest = async (req, res)=>{
+  try {
+    const response = await axios.get("/admin/vendorsRequest");
+    return response.data;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const VendorDetailsAndServices = async (vendorId)=> {
+  try {
+    const response = await axios.get(`/admin/vendorDetailsAndServices/${vendorId}`);
+    return response.data;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const acceptVendor = async(vendorId)=> {
+  
+  try {
+    const response = await axios.patch(`/admin/acceptVendor/${vendorId}`);
+    return response.data
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 const AdminApiCalls = {
     adminsignin,
     userDetails,
     userStatusControl,
     vendorDetails,
-    vendorStatusControl
+    vendorStatusControl,
+    addCategory,
+    allCategory,
+    CategoryStatusControl,
+    VendorsRequest,
+    VendorDetailsAndServices,
+    acceptVendor
 
 }
 

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Card, CardContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -54,6 +54,7 @@ function EmailVerification(props) {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const formRef = useRef(null);
+    const [timeLeft, setTimeLeft] = useState(120);
   
     const onSubmit = async (event) => {
       event.preventDefault();
@@ -68,6 +69,22 @@ function EmailVerification(props) {
       }
       formRef.current.reset();
     };
+
+     // Decrease time left every second
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000);
+    // Clear interval when component unmounts
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
+   // Format seconds into minutes:seconds
+   const formatTimeLeft = () => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
   
     return (
       <div className={classes.root}>
@@ -77,6 +94,9 @@ function EmailVerification(props) {
             <Typography variant="h5" align="center" gutterBottom>
               Enter the OTP sent to your email here
             </Typography>
+            <Typography variant="body1" align="center" className={classes.timer} style={{ color: 'red' }}>
+            Time left: {formatTimeLeft()}
+          </Typography>
             <form onSubmit={onSubmit} ref={formRef} className={classes.form}>
               <TextField
                 type={passShow ? 'text' : 'password'}

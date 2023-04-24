@@ -29,6 +29,26 @@ const userSchema =  mongoose.Schema({
     type: Boolean,
     default: false
 },
+address:{
+  DoorNo:{
+    type:String
+  },
+  Street:{
+    type:String
+  },
+  Landmark:{
+    type:String
+  },
+  City:{
+    type:String
+  },
+  State:{
+    type:String
+  },
+  Pincode:{
+    type:String
+  },
+},
 verifyToken: {
   type: String
 },

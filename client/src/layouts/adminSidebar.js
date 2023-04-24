@@ -1,11 +1,13 @@
 import * as React from "react";
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import AppBar from "@mui/material/AppBar";
 import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
+import { Button } from "@mui/material";
+import { Logout } from "@mui/icons-material";
 import Typography from "@mui/material/Typography";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -18,15 +20,33 @@ import ServicesIcon from "@material-ui/icons/Build";
 import logoimg from "../public/images/parlourlogo.jpg";
 import UsersTable from "../Components/AdminComponents/UsersTable"
 import VendorsTable from "../Components/AdminComponents/VendorsTable";
+import AddServices from "../Components/AdminComponents/AddServices";
+import { useDispatch } from "react-redux";
+import { removeAdminId } from "../store/adminSlice";
+import VendorsRequest from "../Components/AdminComponents/VendorsRequest";
 const drawerWidth = 240;
 
 function AdminSidebar() {
 
-const[selectedItem, setSelectedItem] = useState("Dashboard");
+const [selectedItem, setSelectedItem] = useState(
+  localStorage.getItem("selectedItem") || "Dashboard"
+)
+
+const dispatch = useDispatch();
+
 
 const handleItemClick = (text) =>{
   setSelectedItem(text);
 }
+
+const handleLogout= ()=>{
+   dispatch(removeAdminId());
+}
+
+useEffect(() => {
+  localStorage.setItem("selectedItem", selectedItem);
+},[selectedItem])
+
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -49,6 +69,7 @@ const handleItemClick = (text) =>{
               Radiance
             </Typography>
           </Box>
+          <Button color="inherit" startIcon={<Logout />} sx={{ ml: "auto" }} onClick={handleLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -70,6 +91,7 @@ const handleItemClick = (text) =>{
               { text: "Users", icon: <UsersIcon /> },
               { text: "Vendors", icon: <VendorsIcon /> },
               { text: "Services", icon: <ServicesIcon /> },
+              { text: "Vendors Request", icon: <ServicesIcon /> },
             ].map((item) => (
               <ListItem key={item.text} disablePadding>
                 <ListItemButton
@@ -94,9 +116,7 @@ const handleItemClick = (text) =>{
         <Toolbar />
         {selectedItem === "Dashboard" ? (   <Typography paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-        </Typography>): selectedItem === "Users" ? (<UsersTable/>):selectedItem === "Vendors" ? (<VendorsTable/>):selectedItem === "Services" ? (   <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-        </Typography>): null}
+        </Typography>): selectedItem === "Users" ? (<UsersTable/>):selectedItem === "Vendors" ? (<VendorsTable/>):selectedItem === "Services" ? (<AddServices/> ):selectedItem === "Vendors Request" ? (<VendorsRequest/>) : null}
       
       </Box>
     </Box>
